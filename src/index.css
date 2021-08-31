@@ -1,3 +1,8 @@
+:root {
+  --cyan-400: #0BC5EA;
+  --pink-500: #D53F8C;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -10,4 +15,56 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.Sample input, .Sample button {
+  font: inherit;
+}
+.Sample header {
+  background-color: #323639;
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  padding: 20px;
+  color: white;
+}
+.Sample header h1 {
+  font-size: inherit;
+  margin: 0;
+}
+.Sample__container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin: 10px 0;
+  padding: 10px;
+}
+.Sample__container > * > * {
+  margin: 10px;
+}
+.Sample__container__content {
+  display: flex;
+  max-width: 100%;
+  flex-direction: column;
+  flex-grow: 100;
+  align-items: stretch;
+  padding-top: 1em;
+}
+.Sample__container__content .react-calendar {
+  margin: 0 auto;
+  width: 1100px;
+  line-height: 1.5em;
+}
+.Sample__container__content .react-calendar .react-calendar__tile
+{
+  justify-content: flex-start;
+  display: flex;
+}
+
+/*---------*/
+.Sample__container__content .react-calendar .react-calendar__tile.non-public {
+  border-top: 3px solid var(--cyan-400);
+}
+
+.Sample__container__content .react-calendar .react-calendar__tile.public {
+  border-top: 3px solid var(--pink-500);
 }

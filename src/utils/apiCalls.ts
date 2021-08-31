@@ -17,6 +17,6 @@ export const getCountryByAlpha2Code = async (alpha2Code: string) => {
 }
 
 export const getAllHolidays = async (alpha2Code: string) => {
-    return axios.get(`${process.env.REACT_APP_ALL_HOLIDAYS_URL}?key=${API_KEY}&country=${alpha2Code.toUpperCase()}&year=2020`)
+    return axios.get(`${process.env.REACT_APP_ALL_HOLIDAYS_URL}?key=${API_KEY}&country=${alpha2Code.toUpperCase()}&language=${alpha2Code}&year=2020`)
     .then((response) => response.data)
 }
