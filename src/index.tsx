@@ -7,6 +7,8 @@ import reportWebVitals from './reportWebVitals';
 import CountryListPage from './pages/CountryListPage';
 import CountryHolidaysPage from './pages/CountryHolidaysPage';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from './components/ErrorFallback';
 
 const queryClient = new QueryClient()
 
@@ -18,10 +20,14 @@ ReactDOM.render(
           <div>
             <Switch>
               <Route path="/holidays">
-                <CountryHolidaysPage />
+                <ErrorBoundary FallbackComponent={ErrorFallback}>
+                  <CountryHolidaysPage />
+                </ErrorBoundary>
               </Route>
               <Route path="/">
-                <CountryListPage />
+                <ErrorBoundary FallbackComponent={ErrorFallback}>
+                  <CountryListPage />
+                </ErrorBoundary>
               </Route>
             </Switch>
           </div>

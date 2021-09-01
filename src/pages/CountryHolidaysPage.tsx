@@ -1,4 +1,4 @@
-import { Box, Image } from "@chakra-ui/react";
+import { Box, Image, Tooltip } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
@@ -7,35 +7,23 @@ import { ICountry } from "../utils/ICountry";
 import { IHoliday } from "../utils/IHoliday";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
+import { checkIsWorkingDay, formatDate, getLanguageFromBrowser } from "../utils/helpers";
 
-function CountryHolidaysPage() {
+function CountryHolidaysPage(): JSX.Element {
     const [checkboxState, setCheckboxState]  = useState<boolean>(false)
-    const [value, setValue] = useState(new Date());
+    const [value, setValue] = useState<Date>(new Date());
     const [filteredHolidays, setFilteredHolidays] = useState<IHoliday[]>();
     const location = useLocation();
     const alpha2Code = location.pathname.slice(-2);
+    const browserLang = getLanguageFromBrowser();
 
     const countryQuery = useQuery<ICountry, string>(['country', alpha2Code], () => getCountryByAlpha2Code(alpha2Code))
     console.log('countryQuery', countryQuery.data);
 
-    const allHolidaysQuery = useQuery(['allHolidays', alpha2Code], () => getAllHolidays(alpha2Code));
+    const allHolidaysQuery = useQuery(['allHolidays', alpha2Code, browserLang], () => getAllHolidays(alpha2Code, browserLang));
     console.log('allHolidaysQuery', allHolidaysQuery.data);
 
     const handleClick = () => setCheckboxState(!checkboxState);
-
-    function formatDate(date: any) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = (d.getFullYear() -1);
-    
-        if (month.length < 2) 
-            month = '0' + month;
-        if (day.length < 2) 
-            day = '0' + day;
-    
-        return [year, month, day].join('-');
-    }
 
     useEffect(() => {
         if(allHolidaysQuery.data) {
@@ -44,11 +32,11 @@ function CountryHolidaysPage() {
         }
     }, [checkboxState,  allHolidaysQuery.data])
 
-    function addHolidayToTile(tileDate: any) {
-        return allHolidaysQuery.data.holidays.map((holiday: IHoliday) => holiday.date === formatDate(tileDate) && holiday.name)
+    function addHolidayToTile(tileDate: Date) {
+        return allHolidaysQuery.data.holidays.map((holiday: IHoliday) => holiday.date === formatDate(tileDate) && (checkIsWorkingDay(holiday) ? <Tooltip label="Working day" aria-label="A tooltip">{holiday.name}</Tooltip> : holiday.name))
     }
 
-    function holidayStatus(tileDate: any) {
+    function holidayStatus(tileDate: Date) {
         if(filteredHolidays && checkboxState) {
             return filteredHolidays.map((holiday: IHoliday) => (holiday.date === formatDate(tileDate) && 'public'));
         }
@@ -82,7 +70,7 @@ function CountryHolidaysPage() {
                         <Calendar
                             onChange={setValue}
                             value={value}
-                            locale={`${alpha2Code}-${alpha2Code.toUpperCase()}`}
+                            locale={`${browserLang}-${browserLang.toUpperCase()}`}
                             tileContent={({date}) => addHolidayToTile(date)}
                             tileClassName={({date}) => holidayStatus(date)}
                         />

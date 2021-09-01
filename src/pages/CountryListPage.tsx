@@ -7,7 +7,7 @@ import { useQuery } from "react-query";
 import { ICountry } from "../utils/ICountry";
 
 
-function CountryListPage() {
+function CountryListPage(): JSX.Element {
     const [state, setState] = useState<string>('');
     const [countries, setCountries] = useState<ICountry[] | undefined>([]);
 

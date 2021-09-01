@@ -10,7 +10,7 @@ interface IObserved {
 
 
 interface IWeekday {
-    data: IDate,
+    date: IDate,
     observed: IObserved,
 }
 
