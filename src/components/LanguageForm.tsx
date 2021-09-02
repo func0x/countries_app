@@ -33,7 +33,7 @@ function LanguageForm({
     getLanguageFromBrowser();
   const [language, setLanguage] = useState<string>(initialLanguage);
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    setLanguage(data.language);
+    setLanguage(data.language.toLowerCase());
     return onSelectLanguage(data.language);
   };
 
