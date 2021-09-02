@@ -34,7 +34,7 @@ function LanguageForm({
   const [language, setLanguage] = useState<string>(initialLanguage);
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     setLanguage(data.language.toLowerCase());
-    return onSelectLanguage(data.language);
+    return onSelectLanguage(data.language.toLowerCase());
   };
 
   useEffect(() => {
