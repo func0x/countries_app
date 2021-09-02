@@ -1,9 +1,9 @@
-import { ChakraProvider } from "@chakra-ui/react";
+import { Box, ChakraProvider } from "@chakra-ui/react";
 import { useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import "./App.css";
+import ColorModeChanger from "./components/ColorModeChanger";
 import ErrorFallback from "./components/ErrorFallback";
 import LanguageForm from "./components/LanguageForm";
 import CountryHolidaysPage from "./pages/CountryHolidaysPage";
@@ -23,9 +23,14 @@ function App() {
       <ChakraProvider>
         <Router>
           <div>
-            <ErrorBoundary FallbackComponent={ErrorFallback}>
-              <LanguageForm onSelectLanguage={handleLanguage} />
-            </ErrorBoundary>
+            <Box display="flex">      
+              <ErrorBoundary FallbackComponent={ErrorFallback}>
+                <LanguageForm onSelectLanguage={handleLanguage} />
+              </ErrorBoundary>
+              <ErrorBoundary FallbackComponent={ErrorFallback}>
+                <ColorModeChanger />
+              </ErrorBoundary>
+            </Box>
             <Switch>
               <Route path="/holidays">
                 <ErrorBoundary FallbackComponent={ErrorFallback}>

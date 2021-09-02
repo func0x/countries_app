@@ -1,0 +1,64 @@
+.custom input,
+.custom button {
+  font: inherit;
+}
+.custom header {
+  background-color: #323639;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  color: white;
+}
+.custom header h1 {
+  font-size: inherit;
+  margin: 0;
+}
+.custom__container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin: 10px 0;
+  padding: 10px;
+}
+.custom__container > * > * {
+  margin: 10px;
+}
+.custom__container__content {
+  display: flex;
+  max-width: 100%;
+  flex-direction: column;
+  flex-grow: 100;
+  align-items: stretch;
+  padding-top: 1em;
+}
+.custom__container__content .react-calendar {
+  margin: 0 auto;
+  width: 1100px;
+  line-height: 1.5em;
+}
+.custom__container__content .react-calendar .react-calendar__tile {
+  justify-content: flex-start;
+  display: flex;
+}
+
+/*---------*/
+.custom__container__content .react-calendar .react-calendar__tile.non-public {
+  border-top: 3px solid var(--cyan-400);
+}
+
+.custom__container__content .react-calendar .react-calendar__tile.public {
+  border-top: 3px solid var(--pink-500);
+}
+
+@media only screen and (max-width: 600px) {
+  .custom__container__content
+    .react-calendar
+    .react-calendar__month-view__weekdays {
+    display: none !important;
+  }
+  .custom__container__content .react-calendar .react-calendar__tile {
+    border-bottom: 1px solid gray;
+    flex-basis: 100% !important;
+    max-width: 100% !important;
+  }
+}

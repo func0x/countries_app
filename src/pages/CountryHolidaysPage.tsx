@@ -1,4 +1,4 @@
-import { Tooltip } from "@chakra-ui/react";
+import { Tooltip, useColorModeValue } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
@@ -20,6 +20,7 @@ import {
 import CountryInfo from "../components/CountryInfo";
 import Loader from "../components/Loader";
 import { IHoliday, ICountry, ILanguage } from "../interfaces";
+import "./CountryHolidaysPageStyles.css";
 
 function CountryHolidaysPage({
   langFromForm,
@@ -51,6 +52,8 @@ function CountryHolidaysPage({
   );
 
   const handleChange = () => setCheckboxState(!checkboxState);
+
+  const bg = useColorModeValue("bg-white", "bg-gray")
 
   function addHolidayToTile(tileDate: Date) {
     if (filteredHolidays && checkboxState) {
@@ -134,6 +137,7 @@ function CountryHolidaysPage({
                 locale={`${browserLang}-${browserLang.toUpperCase()}`}
                 tileContent={({ date }) => addHolidayToTile(date)}
                 tileClassName={({ date }) => holidayStatus(date)}
+                className={bg}
               />
             </main>
           </div>

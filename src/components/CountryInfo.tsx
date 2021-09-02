@@ -16,7 +16,7 @@ function CountryInfo({
     <Container>
       <Box
         padding="4"
-        bg="gray.100"
+        bg="gray.500"
         borderRadius="8"
         d="flex"
         flexDirection="column"
