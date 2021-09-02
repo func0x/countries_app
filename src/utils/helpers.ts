@@ -1,4 +1,4 @@
-import { IHoliday } from "./IHoliday";
+import { IHoliday, ILanguage } from "../interfaces";
 
 export function formatDate(date: Date): string {
     let d = new Date(date),
@@ -20,6 +20,17 @@ export function getDateOneYearPass(): Date {
 
 export function getLanguageFromBrowser(): string {
     return navigator.language.slice(0,2);
+}
+
+export function getLanguageFromApp(langFromForm: string): string {
+    return langFromForm ? langFromForm : (window.localStorage.getItem('calendar-language') || getLanguageFromBrowser());
+}
+
+// I think of this when selected lang from our form or our browser isn't available in API then we provide fallback to english
+export function checkLanguageFallback(lang: string, data: ILanguage[]): string {
+    const checkAvailability = data && data.filter((language: ILanguage) => language.code === lang);
+    const langAfterCheckFallback = checkAvailability.length > 0 ? checkAvailability[0].code : 'en';
+    return langAfterCheckFallback;
 }
 
 export function checkIsWorkingDay(holiday: IHoliday): boolean {

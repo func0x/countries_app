@@ -14,7 +14,7 @@ interface IWeekday {
     observed: IObserved,
 }
 
-export interface IHoliday {
+export default interface IHoliday {
     country: string,
     date: string,
     name: string,

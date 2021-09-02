@@ -4,10 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import { getAllCountries, getCountryByName } from "../utils/apiCalls";
 import _ from 'lodash';
 import { useQuery } from "react-query";
-import { ICountry } from "../utils/ICountry";
+import { getLanguageFromApp } from "../utils/helpers";
+import Loader from "../components/Loader";
+import { ICountry } from "../interfaces";
 
 
-function CountryListPage(): JSX.Element {
+function CountryListPage({ langFromForm } : { langFromForm: string }): JSX.Element {
     const [state, setState] = useState<string>('');
     const [countries, setCountries] = useState<ICountry[] | undefined>([]);
 
@@ -20,6 +22,7 @@ function CountryListPage(): JSX.Element {
         setState(e.target.value);
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const debouncedChangeHandler = useCallback(_.debounce(handleChange, 300), [state]);
 
     useEffect(() => {
@@ -35,7 +38,7 @@ function CountryListPage(): JSX.Element {
         <Container maxW="container.xl">
             <Input type="text" name="countryName" placeholder="Type country here..." onChange={debouncedChangeHandler} />
 
-            {filterCountriesQuery.isLoading && <p>'Loading...'</p>}
+            {filterCountriesQuery.isLoading && <Loader />}
             {filterCountriesQuery.error && <p>An error has occurred</p> + filterCountriesQuery.error.message}
             <Flex wrap="wrap" justifyContent="center">
             {(countries !== [] && countries ) && countries.map((country: any, index: number) => (
@@ -57,7 +60,7 @@ function CountryListPage(): JSX.Element {
                                 lineHeight="tight"
                                 style={{ width: '100%', wordBreak: 'break-all' }}
                             >
-                                {country.name}
+                                {getLanguageFromApp(langFromForm) === 'en' ? country.name : country.translations[getLanguageFromApp(langFromForm)]}
                             </Box>
                         </Box>
                     </Box>

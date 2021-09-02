@@ -17,20 +17,32 @@ code {
     monospace;
 }
 
-.Sample input, .Sample button {
+.d-flex {
+  display: flex;
+}
+
+.f-align-end {
+  align-items: flex-end;
+}
+
+.ml-1 {
+  margin-left: 1em;
+}
+
+.custom input, .custom button {
   font: inherit;
 }
-.Sample header {
+.custom header {
   background-color: #323639;
   box-shadow: 0 0 8px rgba(0,0,0,0.5);
   padding: 20px;
   color: white;
 }
-.Sample header h1 {
+.custom header h1 {
   font-size: inherit;
   margin: 0;
 }
-.Sample__container {
+.custom__container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -38,10 +50,10 @@ code {
   margin: 10px 0;
   padding: 10px;
 }
-.Sample__container > * > * {
+.custom__container > * > * {
   margin: 10px;
 }
-.Sample__container__content {
+.custom__container__content {
   display: flex;
   max-width: 100%;
   flex-direction: column;
@@ -49,22 +61,33 @@ code {
   align-items: stretch;
   padding-top: 1em;
 }
-.Sample__container__content .react-calendar {
+.custom__container__content .react-calendar {
   margin: 0 auto;
   width: 1100px;
   line-height: 1.5em;
 }
-.Sample__container__content .react-calendar .react-calendar__tile
+.custom__container__content .react-calendar .react-calendar__tile
 {
   justify-content: flex-start;
   display: flex;
 }
 
 /*---------*/
-.Sample__container__content .react-calendar .react-calendar__tile.non-public {
+.custom__container__content .react-calendar .react-calendar__tile.non-public {
   border-top: 3px solid var(--cyan-400);
 }
 
-.Sample__container__content .react-calendar .react-calendar__tile.public {
+.custom__container__content .react-calendar .react-calendar__tile.public {
   border-top: 3px solid var(--pink-500);
+}
+
+@media only screen and (max-width: 600px) {
+  .custom__container__content .react-calendar .react-calendar__month-view__weekdays {
+    display: none !important;
+  }
+  .custom__container__content .react-calendar .react-calendar__tile {
+    border-bottom: 1px solid gray;
+    flex-basis: 100% !important;
+    max-width: 100% !important;
+  }
 }

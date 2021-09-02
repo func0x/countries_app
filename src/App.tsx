@@ -29,12 +29,12 @@ function App() {
               <Switch>
                 <Route path="/holidays">
                   <ErrorBoundary FallbackComponent={ErrorFallback}>
-                    <CountryHolidaysPage langFromFrom={language}/>
+                    <CountryHolidaysPage langFromForm={language}/>
                   </ErrorBoundary>
                 </Route>
                 <Route path="/">
                   <ErrorBoundary FallbackComponent={ErrorFallback}>
-                    <CountryListPage />
+                    <CountryListPage langFromForm={language}/>
                   </ErrorBoundary>
                 </Route>
               </Switch>

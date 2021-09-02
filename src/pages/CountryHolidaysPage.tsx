@@ -1,29 +1,34 @@
-import { Box, Image, Tooltip } from "@chakra-ui/react";
+import { Tooltip} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
-import { getAllHolidays, getCountryByAlpha2Code } from "../utils/apiCalls";
-import { ICountry } from "../utils/ICountry";
-import { IHoliday } from "../utils/IHoliday";
+import { getAllHolidays, getAvailableHolidaysLanguages, getCountryByAlpha2Code } from "../utils/apiCalls";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
-import { checkIsWorkingDay, formatDate, getDateOneYearPass, getLanguageFromBrowser } from "../utils/helpers";
+import { checkIsWorkingDay, checkLanguageFallback, formatDate, getDateOneYearPass, getLanguageFromApp, getLanguageFromBrowser } from "../utils/helpers";
+import CountryInfo from "../components/CountryInfo";
+import Loader from "../components/Loader";
+import { IHoliday, ICountry, ILanguage } from "../interfaces";
 
-function CountryHolidaysPage({ langFromFrom } : { langFromFrom: string }): JSX.Element {
+function CountryHolidaysPage({ langFromForm } : { langFromForm: string }): JSX.Element {
     const [checkboxState, setCheckboxState]  = useState<boolean>(false)
     const [value, setValue] = useState<Date>(getDateOneYearPass());
+    const [languages, setLanguages] = useState<ILanguage[]>([])
     const [filteredHolidays, setFilteredHolidays] = useState<IHoliday[]>();
     const location = useLocation();
-    const alpha2Code = location.pathname.slice(-2);
     const browserLang = getLanguageFromBrowser();
+    const alpha2Code = location.pathname.slice(-2);
 
     const countryQuery = useQuery<ICountry, Error>(['country', alpha2Code], () => getCountryByAlpha2Code(alpha2Code))
-
-    const allHolidaysQuery = useQuery(['allHolidays', alpha2Code, browserLang, langFromFrom], () => getAllHolidays(alpha2Code, langFromFrom ? langFromFrom : (window.localStorage.getItem('calendar-language') || browserLang) ));
-
+    const availableLanguageQuery = useQuery<ILanguage[], Error>('availableLanguage', getAvailableHolidaysLanguages);
+    const allHolidaysQuery = useQuery(['allHolidays', alpha2Code, langFromForm], () => getAllHolidays(alpha2Code, checkLanguageFallback(getLanguageFromApp(langFromForm), languages) ));
+    
     const handleChange = () => setCheckboxState(!checkboxState);
 
     function addHolidayToTile(tileDate: Date) {
+        if(filteredHolidays && checkboxState) {
+            return filteredHolidays.map((holiday: IHoliday) => (holiday.date === formatDate(tileDate) && holiday.name));
+        }
         return allHolidaysQuery.data.holidays.map((holiday: IHoliday) => holiday.date === formatDate(tileDate) && (checkIsWorkingDay(holiday) ? <Tooltip label="Working day" aria-label="A tooltip" key={holiday.uuid}>{holiday.name}</Tooltip> : holiday.name))
     }
 
@@ -44,37 +49,32 @@ function CountryHolidaysPage({ langFromFrom } : { langFromFrom: string }): JSX.E
         }
     }, [checkboxState,  allHolidaysQuery.data])
 
+    useEffect(() => {
+        if(availableLanguageQuery.data) {
+            setLanguages(availableLanguageQuery.data);
+        }
+
+    }, [availableLanguageQuery.data])
+
     return (
         <div>
             {countryQuery.isLoading && <p>'Loading country data...'</p>}
             {countryQuery.error && <p>An error has occurred</p> + countryQuery.error.message}
             {countryQuery.data && (
-                <>
-                    <input type="checkbox" onChange={handleChange} checked={checkboxState} />
-                    <Image src={countryQuery.data.flag} alt={`${countryQuery.data.name} flag`} height="150px" width="250px" objectFit="cover" fallbackSrc="https://via.placeholder.com/150"/>
-                    <Box
-                        mt="1"
-                        fontWeight="semibold"
-                        as="h4"
-                        lineHeight="tight"
-                        style={{ width: '100%', wordBreak: 'break-all' }}
-                    >
-                        {countryQuery.data.name}
-                    </Box>
-                </>
+                <CountryInfo country={countryQuery.data} handleChange={handleChange} checkboxState={checkboxState} />
             )}
-            {allHolidaysQuery.isLoading && <p>'Loading calendar...'</p>}
+            {allHolidaysQuery.isLoading && <Loader />}
             {allHolidaysQuery.data && (
-                <div className="Sample">
-                    <div className="Sample__container">
-                        <main className="Sample__container__content">
-                        <Calendar
-                            onChange={setValue}
-                            value={value}
-                            locale={`${browserLang}-${browserLang.toUpperCase()}`}
-                            tileContent={({date}) => addHolidayToTile(date)}
-                            tileClassName={({date}) => holidayStatus(date)}
-                        />
+                <div className="custom">
+                    <div className="custom__container">
+                        <main className="custom__container__content">
+                            <Calendar
+                                onChange={setValue}
+                                value={value}
+                                locale={`${browserLang}-${browserLang.toUpperCase()}`}
+                                tileContent={({date}) => addHolidayToTile(date)}
+                                tileClassName={({date}) => holidayStatus(date)}
+                            />
                         </main>
                     </div>
                 </div>

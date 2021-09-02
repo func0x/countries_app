@@ -23,7 +23,7 @@ interface ITranslation {
 }
 
 
-export interface ICountry {
+export default interface ICountry {
     name: string,
     topLevelDomain: string[],
     alpha2Code: string,
