@@ -1,25 +1,24 @@
 interface IDate {
-    name: string,
-    numeric: string,
+  name: string;
+  numeric: string;
 }
 
 interface IObserved {
-    name: string,
-    numeric: string,
+  name: string;
+  numeric: string;
 }
 
-
 interface IWeekday {
-    date: IDate,
-    observed: IObserved,
+  date: IDate;
+  observed: IObserved;
 }
 
 export default interface IHoliday {
-    country: string,
-    date: string,
-    name: string,
-    observed: string,
-    public: boolean,
-    uuid: string,
-    weekday: IWeekday,
+  country: string;
+  date: string;
+  name: string;
+  observed: string;
+  public: boolean;
+  uuid: string;
+  weekday: IWeekday;
 }
