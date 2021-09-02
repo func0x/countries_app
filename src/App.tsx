@@ -1,25 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
+import { ChakraProvider } from '@chakra-ui/react';
+import { useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
+import ErrorFallback from './components/ErrorFallback';
+import LanguageForm from './components/LanguageForm';
+import CountryHolidaysPage from './pages/CountryHolidaysPage';
+import CountryListPage from './pages/CountryListPage';
+
+const queryClient = new QueryClient()
 
 function App() {
+  const [ language, setLanguage] = useState<string>('')
+
+  const handleLanguage = (langValue: string) => {
+    setLanguage(langValue);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider>
+        <Router>
+            <div>
+              <ErrorBoundary FallbackComponent={ErrorFallback}>
+                <LanguageForm onSelectLanguage={handleLanguage}/>
+              </ErrorBoundary>
+              <Switch>
+                <Route path="/holidays">
+                  <ErrorBoundary FallbackComponent={ErrorFallback}>
+                    <CountryHolidaysPage langFromFrom={language}/>
+                  </ErrorBoundary>
+                </Route>
+                <Route path="/">
+                  <ErrorBoundary FallbackComponent={ErrorFallback}>
+                    <CountryListPage />
+                  </ErrorBoundary>
+                </Route>
+              </Switch>
+            </div>
+          </Router>
+        </ChakraProvider>
+      </QueryClientProvider>
   );
 }
 

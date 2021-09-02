@@ -7,33 +7,24 @@ import { ICountry } from "../utils/ICountry";
 import { IHoliday } from "../utils/IHoliday";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
-import { checkIsWorkingDay, formatDate, getLanguageFromBrowser } from "../utils/helpers";
+import { checkIsWorkingDay, formatDate, getDateOneYearPass, getLanguageFromBrowser } from "../utils/helpers";
 
-function CountryHolidaysPage(): JSX.Element {
+function CountryHolidaysPage({ langFromFrom } : { langFromFrom: string }): JSX.Element {
     const [checkboxState, setCheckboxState]  = useState<boolean>(false)
-    const [value, setValue] = useState<Date>(new Date());
+    const [value, setValue] = useState<Date>(getDateOneYearPass());
     const [filteredHolidays, setFilteredHolidays] = useState<IHoliday[]>();
     const location = useLocation();
     const alpha2Code = location.pathname.slice(-2);
     const browserLang = getLanguageFromBrowser();
 
-    const countryQuery = useQuery<ICountry, string>(['country', alpha2Code], () => getCountryByAlpha2Code(alpha2Code))
-    console.log('countryQuery', countryQuery.data);
+    const countryQuery = useQuery<ICountry, Error>(['country', alpha2Code], () => getCountryByAlpha2Code(alpha2Code))
 
-    const allHolidaysQuery = useQuery(['allHolidays', alpha2Code, browserLang], () => getAllHolidays(alpha2Code, browserLang));
-    console.log('allHolidaysQuery', allHolidaysQuery.data);
+    const allHolidaysQuery = useQuery(['allHolidays', alpha2Code, browserLang, langFromFrom], () => getAllHolidays(alpha2Code, langFromFrom ? langFromFrom : (window.localStorage.getItem('calendar-language') || browserLang) ));
 
-    const handleClick = () => setCheckboxState(!checkboxState);
-
-    useEffect(() => {
-        if(allHolidaysQuery.data) {
-            const filteredHolidays = allHolidaysQuery.data.holidays.filter((holiday: IHoliday) => holiday.public === checkboxState)
-            setFilteredHolidays(filteredHolidays);
-        }
-    }, [checkboxState,  allHolidaysQuery.data])
+    const handleChange = () => setCheckboxState(!checkboxState);
 
     function addHolidayToTile(tileDate: Date) {
-        return allHolidaysQuery.data.holidays.map((holiday: IHoliday) => holiday.date === formatDate(tileDate) && (checkIsWorkingDay(holiday) ? <Tooltip label="Working day" aria-label="A tooltip">{holiday.name}</Tooltip> : holiday.name))
+        return allHolidaysQuery.data.holidays.map((holiday: IHoliday) => holiday.date === formatDate(tileDate) && (checkIsWorkingDay(holiday) ? <Tooltip label="Working day" aria-label="A tooltip" key={holiday.uuid}>{holiday.name}</Tooltip> : holiday.name))
     }
 
     function holidayStatus(tileDate: Date) {
@@ -46,11 +37,20 @@ function CountryHolidaysPage(): JSX.Element {
         return [...nonPublicHolidays, ...publicHolidays];
     }
 
+    useEffect(() => {
+        if(allHolidaysQuery.data) {
+            const filteredHolidays = allHolidaysQuery.data.holidays.filter((holiday: IHoliday) => holiday.public === checkboxState)
+            setFilteredHolidays(filteredHolidays);
+        }
+    }, [checkboxState,  allHolidaysQuery.data])
+
     return (
         <div>
+            {countryQuery.isLoading && <p>'Loading country data...'</p>}
+            {countryQuery.error && <p>An error has occurred</p> + countryQuery.error.message}
             {countryQuery.data && (
                 <>
-                    <input type="checkbox" onClick={handleClick} checked={checkboxState} />
+                    <input type="checkbox" onChange={handleChange} checked={checkboxState} />
                     <Image src={countryQuery.data.flag} alt={`${countryQuery.data.name} flag`} height="150px" width="250px" objectFit="cover" fallbackSrc="https://via.placeholder.com/150"/>
                     <Box
                         mt="1"
@@ -63,6 +63,7 @@ function CountryHolidaysPage(): JSX.Element {
                     </Box>
                 </>
             )}
+            {allHolidaysQuery.isLoading && <p>'Loading calendar...'</p>}
             {allHolidaysQuery.data && (
                 <div className="Sample">
                     <div className="Sample__container">

@@ -3,8 +3,8 @@ import { IHoliday } from "./IHoliday";
 export function formatDate(date: Date): string {
     let d = new Date(date),
         month = '' + (d.getMonth() + 1),
-        day = '' + (d.getDate() + 1),
-        year = (d.getFullYear() - 1); // Because we operate on 2020 holidays
+        day = '' + d.getDate(),
+        year = d.getFullYear(); // Because we operate on 2020 holidays
 
     if (month.length < 2) 
         month = '0' + month;
@@ -12,6 +12,10 @@ export function formatDate(date: Date): string {
         day = '0' + day;
 
     return [year, month, day].join('-');
+}
+
+export function getDateOneYearPass(): Date {
+    return new Date(new Date().setFullYear(new Date().getFullYear() - 1))
 }
 
 export function getLanguageFromBrowser(): string {

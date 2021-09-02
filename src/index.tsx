@@ -1,39 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { ChakraProvider } from '@chakra-ui/react';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import CountryListPage from './pages/CountryListPage';
-import CountryHolidaysPage from './pages/CountryHolidaysPage';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ErrorBoundary } from 'react-error-boundary';
-import ErrorFallback from './components/ErrorFallback';
-
-const queryClient = new QueryClient()
+import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider>
-      <Router>
-          <div>
-            <Switch>
-              <Route path="/holidays">
-                <ErrorBoundary FallbackComponent={ErrorFallback}>
-                  <CountryHolidaysPage />
-                </ErrorBoundary>
-              </Route>
-              <Route path="/">
-                <ErrorBoundary FallbackComponent={ErrorFallback}>
-                  <CountryListPage />
-                </ErrorBoundary>
-              </Route>
-            </Switch>
-          </div>
-        </Router>
-      </ChakraProvider>
-    </QueryClientProvider>
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

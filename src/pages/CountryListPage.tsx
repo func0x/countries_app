@@ -11,9 +11,8 @@ function CountryListPage(): JSX.Element {
     const [state, setState] = useState<string>('');
     const [countries, setCountries] = useState<ICountry[] | undefined>([]);
 
-    const allCountriesQuery = useQuery<ICountry[], string>('allCountries', getAllCountries)
-
-    const filterCountriesQuery = useQuery<ICountry[], string>(['filterCountries', state], () => getCountryByName(state))
+    const allCountriesQuery = useQuery<ICountry[], Error>('allCountries', getAllCountries)
+    const filterCountriesQuery = useQuery<ICountry[], Error>(['filterCountries', state], () => getCountryByName(state))
 
     function handleChange(e: any) {
         e.preventDefault();
@@ -37,7 +36,7 @@ function CountryListPage(): JSX.Element {
             <Input type="text" name="countryName" placeholder="Type country here..." onChange={debouncedChangeHandler} />
 
             {filterCountriesQuery.isLoading && <p>'Loading...'</p>}
-            {filterCountriesQuery.error && <p>An error has occurred</p> + filterCountriesQuery.error}
+            {filterCountriesQuery.error && <p>An error has occurred</p> + filterCountriesQuery.error.message}
             <Flex wrap="wrap" justifyContent="center">
             {(countries !== [] && countries ) && countries.map((country: any, index: number) => (
                 <Link to={`holidays/${country.alpha2Code.toLowerCase()}`} key={index}>
