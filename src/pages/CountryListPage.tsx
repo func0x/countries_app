@@ -100,7 +100,8 @@ function CountryListPage({
                   >
                     {getLanguageFromApp(langFromForm) === "en"
                       ? country.name
-                      : country.translations[getLanguageFromApp(langFromForm)]}
+                      : (country.translations[getLanguageFromApp(langFromForm)] ? country.translations[getLanguageFromApp(langFromForm)] : country.name)}
+                      {/* Fallback for translation name from countries API */}
                   </Box>
                 </Box>
               </Box>

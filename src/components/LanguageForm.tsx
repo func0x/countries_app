@@ -57,7 +57,6 @@ function LanguageForm({
               <option value="es">spanish</option>
               <option value="fr">french</option>
               <option value="pl">polish</option>
-              <option value="xx">xx</option>
             </Select>
           </FormControl>
           <Button colorScheme="blue" size="md" type="submit" className="ml-1">
